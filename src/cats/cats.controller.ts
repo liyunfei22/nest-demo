@@ -43,6 +43,7 @@ export class CatsController {
 
   @Get('res')
   findOne3(@Res() response: any): string {
+    // @Res({ passthrough: true })
     console.log(response);
     response.status(404).send('res');
     return `get res`;

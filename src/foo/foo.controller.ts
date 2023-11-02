@@ -11,12 +11,14 @@ import { FooService } from './foo.service';
 import { CreateFooDto } from './dto/create-foo.dto';
 import { UpdateFooDto } from './dto/update-foo.dto';
 import { CommonService } from 'src/common/common.service';
+import { ConfigService } from 'src/config/config.service';
 
 @Controller('foo')
 export class FooController {
   constructor(
     private readonly fooService: FooService,
     private readonly commonService: CommonService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Post()
@@ -26,7 +28,8 @@ export class FooController {
 
   @Get()
   findAll() {
-    return this.commonService.common();
+    this.commonService.common();
+    return this.configService.get('name');
   }
 
   @Get(':id')

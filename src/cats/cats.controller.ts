@@ -1,12 +1,16 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { CatsService } from './cats.service';
 
 @Controller('cats')
 export class CatsController {
-  constructor(private catsService: CatsService) {}
+  constructor(
+    private catsService: CatsService,
+    @Inject('CONNECTION') private connection: string,
+  ) {}
 
   @Get()
   findAll() {
+    console.log(this.connection);
     return this.catsService.findAll();
   }
 

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CatsService } from './cats.service';
 import { CatsController } from './cats.controller';
-
+import { LoggerService } from './logger.service';
 console.log(CatsService, typeof CatsService);
 
 const mockCatsService: any = {
@@ -10,8 +10,31 @@ const mockCatsService: any = {
   },
 };
 
+// const connectionProvider = {
+//   provide: 'CNNECTION',
+//   useFactory: (optionsProvider, optionalProvider?: string) => {
+//     const options = optionsProvider.get();
+//     return new DatabaseConnection(options)
+//   },
+//   inject: [OptionsProvider, { token: 'SomeOptionalProvider', optional: true }]
+// }
+const loggerAliasProvider = {
+  provide: 'AliasedLoggerService',
+  useExisting: LoggerService,
+};
+
+const configFactory = {
+  provide: 'CONFIG',
+  useFactory: () => {
+    return process.env.NODE_ENV === 'development' ? 'devConfig' : 'prodConfig';
+  },
+};
+// 异步
+
 @Module({
   providers: [
+    // connectionProvider,
+    // OptionsProvider,
     {
       provide: CatsService,
       useValue: mockCatsService,
@@ -20,8 +43,18 @@ const mockCatsService: any = {
       provide: 'CONNECTION',
       useValue: 'sss',
     },
+    {
+      provide: 'ASYNC_CONNECTION',
+      useFactory: async () => {
+        // const connection = await createConnection(options);
+        // return connection;
+      },
+    },
+    LoggerService,
+    loggerAliasProvider,
+    configFactory,
   ],
   controllers: [CatsController],
-  exports: [CatsService],
+  exports: [CatsService, 'CONNECTION'],
 })
 export class CatsModule {}

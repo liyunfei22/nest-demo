@@ -6,7 +6,11 @@ import { FooModule } from './foo/foo.module';
 import { ConfigModule } from './config/config.module';
 
 @Module({
-  imports: [CatsModule, FooModule, ConfigModule],
+  imports: [
+    CatsModule,
+    FooModule,
+    ConfigModule.register({ folder: './config' }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

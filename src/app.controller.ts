@@ -1,7 +1,17 @@
-import { Controller, Get, Inject, Res, Session, Headers, UnauthorizedException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  Res,
+  Session,
+  Headers,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { LoginGuard } from './login.guard';
 
 @Controller()
 export class AppController {
@@ -27,7 +37,7 @@ export class AppController {
       try {
         const token = authorization.split(' ')[1];
         const data = this.jwtService.verify(token);
-        console.log(data)
+        console.log(data);
         const newToken = this.jwtService.sign({
           count: data.count + 1,
         });
@@ -44,5 +54,15 @@ export class AppController {
 
     response.setHeader('token', newToken);
     return 'hello1';
+  }
+
+  @Get('aaa')
+  @UseGuards(LoginGuard)
+  aaa() {
+    return 'aaa';
+  }
+  @Get('bbb')
+  bbb() {
+    return 'bbb';
   }
 }
